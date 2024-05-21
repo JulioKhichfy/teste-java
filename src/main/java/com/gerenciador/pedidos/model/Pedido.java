@@ -1,113 +1,78 @@
 package com.gerenciador.pedidos.model;
 
 import jakarta.persistence.*;
-
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
+import java.util.List;
 
 @Entity
-@Table(name = "tb_pedidos")
-public class Pedido implements Serializable {
-    private static final long serialVersionUID = 1L;
-
-    public Pedido() {}
+@Table(name = "pedido")
+public class Pedido {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private Integer id;
 
-    //número controle - número aleatório informado pelo cliente.
-    @Column(name="numero_controle", unique=true, nullable=false)
-    private Long numeroControle;
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private Cliente cliente;
 
-    //data cadastro (opcional)
-    @Column(name="data_cadastro")
-    private LocalDate dataCadastro;
+    @Column(name = "data_pedido")
+    private LocalDate dataPedido;
 
-    //nome - nome do produto
-    @Column(name="nome_produto", nullable=false)
-    private String nomeProduto;
+    @Column(name = "total", precision = 20, scale = 2)
+    private BigDecimal total;
 
-    //valor - valor monetário unitário produto
-    @Column(name="valor", nullable=false)
-    private BigDecimal valor;
+    @OneToMany(mappedBy = "pedido")
+    private List<ItemPedido> itens;
 
-    //quantidade (opcional) - quantidade de produtos.
-    @Column(name="quantidade")
-    private Integer quantidade;
+    public List<ItemPedido> getItens() {
+        return itens;
+    }
 
-    //codigo cliente - identificação numérica do cliente
-    @Column(name="codigo_cliente", unique=true, nullable=false)
-    private Long codigoCliente;
+    public void setItens(List<ItemPedido> itens) {
+        this.itens = itens;
+    }
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public Long getNumeroControle() {
-        return numeroControle;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setNumeroControle(Long numeroControle) {
-        this.numeroControle = numeroControle;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
 
-    public LocalDate getDataCadastro() {
-        return dataCadastro;
+    public LocalDate getDataPedido() {
+        return dataPedido;
     }
 
-    public void setDataCadastro(LocalDate dataCadastro) {
-        this.dataCadastro = dataCadastro;
+    public void setDataPedido(LocalDate dataPedido) {
+        this.dataPedido = dataPedido;
     }
 
-    public String getNomeProduto() {
-        return nomeProduto;
+    public BigDecimal getTotal() {
+        return total;
     }
 
-    public void setNomeProduto(String nomeProduto) {
-        this.nomeProduto = nomeProduto;
-    }
-
-    public BigDecimal getValor() {
-        return valor;
-    }
-
-    public void setValor(BigDecimal valor) {
-        this.valor = valor;
-    }
-
-    public Integer getQuantidade() {
-        return quantidade;
-    }
-
-    public void setQuantidade(Integer quantidade) {
-        this.quantidade = quantidade;
-    }
-
-    public Long getCodigoCliente() {
-        return codigoCliente;
-    }
-
-    public void setCodigoCliente(Long codigoCliente) {
-        this.codigoCliente = codigoCliente;
+    public void setTotal(BigDecimal total) {
+        this.total = total;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Pedido pedido = (Pedido) o;
-        return getId().equals(pedido.getId()) && getNumeroControle().equals(pedido.getNumeroControle()) && Objects.equals(getDataCadastro(), pedido.getDataCadastro()) && getNomeProduto().equals(pedido.getNomeProduto()) && getValor().equals(pedido.getValor()) && Objects.equals(getQuantidade(), pedido.getQuantidade()) && getCodigoCliente().equals(pedido.getCodigoCliente());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getNumeroControle(), getDataCadastro(), getNomeProduto(), getValor(), getQuantidade(), getCodigoCliente());
+    public String toString() {
+        return "Pedido{" +
+                "id=" + id +
+                ", dataPedido=" + dataPedido +
+                ", total=" + total +
+                '}';
     }
 }
