@@ -6,12 +6,10 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name = "pedido")
 public class Pedido {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne
@@ -65,14 +63,5 @@ public class Pedido {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
-    }
-
-    @Override
-    public String toString() {
-        return "Pedido{" +
-                "id=" + id +
-                ", dataPedido=" + dataPedido +
-                ", total=" + total +
-                '}';
     }
 }

@@ -5,34 +5,20 @@ import java.util.Set;
 
 @Entity
 @Table( name = "cliente" )
-public class Cliente{
+public class Cliente {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "codigo", unique = true)
+    @Column(unique = true)
     private Integer codigo;
 
-    @Column(name = "nome", length = 100)
+    @Column(length = 100)
     private String nome;
 
     @OneToMany( mappedBy = "cliente" , fetch = FetchType.LAZY )
     private Set<Pedido> pedidos;
-
-    public Cliente() {
-    }
-
-    public Cliente(Integer id, Integer codigo, String nome) {
-        this.id = id;
-        this.codigo = codigo;
-        this.nome = nome;
-    }
-
-    public Cliente(String nome) {
-        this.nome = nome;
-    }
 
     public Integer getId() {
         return id;
@@ -64,13 +50,5 @@ public class Cliente{
 
     public void setPedidos(Set<Pedido> pedidos) {
         this.pedidos = pedidos;
-    }
-
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                '}';
     }
 }
