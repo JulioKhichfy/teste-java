@@ -3,8 +3,8 @@ package com.gerenciador.pedidos.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "item_pedido")
-public class ItemPedido {
+@Table( name = "item_pedido" )
+public class ItemPedidoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -12,11 +12,11 @@ public class ItemPedido {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id")
-    private Pedido pedido;
+    private PedidoModel pedido;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "produto_id")
-    private Produto produto;
+    private ProdutoModel produto;
 
     @Column
     private Integer quantidade;
@@ -29,19 +29,19 @@ public class ItemPedido {
         this.id = id;
     }
 
-    public Pedido getPedido() {
+    public PedidoModel getPedido() {
         return pedido;
     }
 
-    public void setPedido(Pedido pedido) {
+    public void setPedido(PedidoModel pedido) {
         this.pedido = pedido;
     }
 
-    public Produto getProduto() {
+    public ProdutoModel getProduto() {
         return produto;
     }
 
-    public void setProduto(Produto produto) {
+    public void setProduto(ProdutoModel produto) {
         this.produto = produto;
     }
 

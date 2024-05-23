@@ -6,7 +6,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Pedido {
+@Table( name = "pedido" )
+public class PedidoModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +15,7 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    private Cliente cliente;
+    private ClienteModel cliente;
 
     @Column(name = "data_pedido")
     private LocalDate dataPedido;
@@ -22,15 +23,18 @@ public class Pedido {
     @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
 
-    @OneToMany(mappedBy = "pedido")
-    private List<ItemPedido> itens;
+    @OneToOne(mappedBy = "pedido")
+    private ItemPedidoModel item;
 
-    public List<ItemPedido> getItens() {
-        return itens;
+    @Column(name = "numero_controle")
+    private Integer numeroControle;
+
+    public ItemPedidoModel getItem() {
+        return item;
     }
 
-    public void setItens(List<ItemPedido> itens) {
-        this.itens = itens;
+    public void setItem(ItemPedidoModel item) {
+        this.item = item;
     }
 
     public Integer getId() {
@@ -41,11 +45,11 @@ public class Pedido {
         this.id = id;
     }
 
-    public Cliente getCliente() {
+    public ClienteModel getCliente() {
         return cliente;
     }
 
-    public void setCliente(Cliente cliente) {
+    public void setCliente(ClienteModel cliente) {
         this.cliente = cliente;
     }
 
@@ -63,5 +67,13 @@ public class Pedido {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public Integer getNumeroControle() {
+        return numeroControle;
+    }
+
+    public void setNumeroControle(Integer numeroControle) {
+        this.numeroControle = numeroControle;
     }
 }

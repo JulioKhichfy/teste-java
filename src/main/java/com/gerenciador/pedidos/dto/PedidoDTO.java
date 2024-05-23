@@ -1,10 +1,12 @@
-package com.gerenciador.pedidos.model;
+package com.gerenciador.pedidos.dto;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
+import java.time.LocalDate;
+
 @XmlRootElement(name = "pedido")
-public class PedidoArquivo {
+public class PedidoDTO {
 
     private int numeroControle;
     private String dataCadastro;
@@ -13,7 +15,7 @@ public class PedidoArquivo {
     private int quantidade;
     private int codigoCliente;
 
-    public PedidoArquivo() {
+    public PedidoDTO() {
         // Construtor padrão necessário para a desserialização
     }
 

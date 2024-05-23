@@ -1,9 +1,12 @@
 package com.gerenciador.pedidos.resources;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gerenciador.pedidos.model.PedidosArquivo;
+import com.gerenciador.pedidos.dto.PedidoListDTO;
+import com.gerenciador.pedidos.repository.PedidosRepository;
+import com.gerenciador.pedidos.service.PedidoService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,34 +22,13 @@ import java.io.InputStream;
 @RequestMapping("/api/pedidos")
 public class PedidoResource {
 
+    @Autowired
+    private PedidoService pedidoService;
+
     @PostMapping("/upload")
-    public ResponseEntity<PedidosArquivo> uploadFile(@RequestBody MultipartFile file) {
-        try {
-            String filename = file.getOriginalFilename();
-            InputStream inputStream = file.getInputStream();
-            PedidosArquivo pedidosArquivo = null;
-
-            if (filename != null && (filename.endsWith(".json") || filename.endsWith(".JSON"))) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                pedidosArquivo = objectMapper.readValue(inputStream, PedidosArquivo.class);
-            } else if(filename != null && (filename.endsWith(".xml") || filename.endsWith(".XML"))) {
-                JAXBContext jaxbContext = JAXBContext.newInstance(PedidosArquivo.class);
-                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                pedidosArquivo = (PedidosArquivo) unmarshaller.unmarshal(inputStream);
-            }
-
-            if (pedidosArquivo != null) {
-                return new ResponseEntity<>(pedidosArquivo, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity<?> uploadFile(@RequestBody MultipartFile file) {
+        pedidoService.processarArquivo(file);
+        return ResponseEntity.ok(201);
     }
 }
 

@@ -1,32 +1,32 @@
 create table cliente (
-    id integer not null,
     codigo integer,
-    nome varchar(100),
+    id integer not null auto_increment,
     primary key (id)
-);
-
-create table produto (
-    id integer not null,
-    preco_unitario decimal(38,2),
-    descricao varchar(255),
-    primary key (id)
-);
-
-create table pedido (
-    cliente_id integer,
-    data_pedido date,
-    id integer not null,
-    total decimal(20,2),
-    primary key (id)
-);
+)
 
 create table item_pedido (
-    id integer not null,
+    id integer not null auto_increment,
     pedido_id integer,
     produto_id integer,
     quantidade integer,
     primary key (id)
-);
+)
+
+create table pedido (
+    cliente_id integer,
+    data_pedido date,
+    id integer not null auto_increment,
+    numero_controle integer,
+    total decimal(20,2),
+    primary key (id)
+)
+
+create table produto (
+    id integer not null auto_increment,
+    preco_unitario decimal(20,2),
+    descricao varchar(255),
+    primary key (id)
+)
 
 alter table cliente
    add constraint UK_jhug2gvm17hj5sqykqqf3ks01 unique (codigo)

@@ -1,24 +1,24 @@
-package com.gerenciador.pedidos.model;
+package com.gerenciador.pedidos.dto;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "pedidos")
-public class PedidosArquivo {
+public class PedidoListDTO {
 
-    private List<PedidoArquivo> pedidos;
+    private List<PedidoDTO> pedidos;
 
-    public PedidosArquivo() {
+    public PedidoListDTO() {
         // Construtor padrão necessário para a desserialização
     }
 
     @XmlElement(name = "pedido")
-    public List<PedidoArquivo> getPedidos() {
+    public List<PedidoDTO> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(List<PedidoArquivo> pedidos) {
+    public void setPedidos(List<PedidoDTO> pedidos) {
         this.pedidos = pedidos;
     }
 }
