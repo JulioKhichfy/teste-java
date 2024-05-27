@@ -3,7 +3,6 @@ package com.gerenciador.pedidos.model;
 import jakarta.persistence.*;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table( name = "cliente" )
@@ -16,8 +15,8 @@ public class ClienteModel {
     @Column(unique = true)
     private Integer codigo;
 
-    @OneToMany(mappedBy = "cliente" , fetch = FetchType.LAZY)
-    private List<PedidoModel> pedidos;
+    @OneToMany(mappedBy = "cliente" , fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ProdutoModel> pedidos;
 
     public Integer getId() {
         return id;
@@ -35,11 +34,11 @@ public class ClienteModel {
         this.codigo = codigo;
     }
 
-    public List<PedidoModel> getPedidos() {
+    public List<ProdutoModel> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(List<PedidoModel> pedidos) {
+    public void setPedidos(List<ProdutoModel> pedidos) {
         this.pedidos = pedidos;
     }
 }

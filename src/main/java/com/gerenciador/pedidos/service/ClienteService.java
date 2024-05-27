@@ -5,6 +5,7 @@ import com.gerenciador.pedidos.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
@@ -26,5 +27,10 @@ public class ClienteService {
     public ClienteModel create(ClienteModel cliente) {
         logger.info("Executando o método create cliente");
         return repository.save(cliente);
+    }
+
+    public List<ClienteModel> saveAll(List<ClienteModel> clientes) {
+        logger.info("Executando o método create cliente");
+        return repository.saveAll(clientes);
     }
 }

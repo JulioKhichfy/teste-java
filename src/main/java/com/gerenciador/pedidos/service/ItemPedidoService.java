@@ -19,4 +19,8 @@ public class ItemPedidoService {
         logger.info("Executando o método create itemPedido");
         return repository.save(itemPedido);
     }
+
+    public boolean existsByNumeroControle(Integer numeroControle){
+        return repository.existsByNumeroControle(numeroControle);
+    }
 }

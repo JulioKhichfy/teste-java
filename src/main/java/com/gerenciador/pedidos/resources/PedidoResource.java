@@ -3,6 +3,7 @@ package com.gerenciador.pedidos.resources;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gerenciador.pedidos.dto.PedidoListDTO;
 import com.gerenciador.pedidos.repository.PedidosRepository;
+import com.gerenciador.pedidos.service.ArquivoPedidoService;
 import com.gerenciador.pedidos.service.PedidoService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
@@ -23,11 +24,11 @@ import java.io.InputStream;
 public class PedidoResource {
 
     @Autowired
-    private PedidoService pedidoService;
+    private ArquivoPedidoService arquivoPedidoService;
 
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestBody MultipartFile file) {
-        pedidoService.processarArquivo(file);
+        arquivoPedidoService.processarArquivo(file);
         return ResponseEntity.ok(201);
     }
 }

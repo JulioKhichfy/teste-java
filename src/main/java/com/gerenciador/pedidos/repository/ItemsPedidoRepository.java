@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ItemsPedidoRepository extends JpaRepository<ItemPedidoModel, Integer> {
+    boolean existsByNumeroControle(Integer numeroControle);
 }
