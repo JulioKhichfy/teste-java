@@ -1,0 +1,20 @@
+{
+  "pedidos": [
+    {
+      "numeroControle": 124,
+      "dataCadastro": "2024-01-02",
+      "nome": "mouse",
+      "valor": 100.0,
+      "quantidade": 2,
+      "codigoCliente": 1
+    },
+    {
+      "numeroControle": 125,
+      "dataCadastro": "2024-01-02",
+      "nome": "Teclado",
+      "valor": 200.0,
+      "quantidade": 3,
+      "codigoCliente": 1
+    }
+  ]
+}

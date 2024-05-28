@@ -6,7 +6,7 @@ import java.util.List;
 
 @Entity
 @Table( name = "cliente" )
-public class ClienteModel {
+public class ClientModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class ClienteModel {
     private Integer codigo;
 
     @OneToMany(mappedBy = "cliente" , fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<ProdutoModel> pedidos;
+    private List<OrderModel> pedidos;
 
     public Integer getId() {
         return id;
@@ -34,11 +34,11 @@ public class ClienteModel {
         this.codigo = codigo;
     }
 
-    public List<ProdutoModel> getPedidos() {
+    public List<OrderModel> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(List<ProdutoModel> pedidos) {
+    public void setPedidos(List<OrderModel> pedidos) {
         this.pedidos = pedidos;
     }
 }

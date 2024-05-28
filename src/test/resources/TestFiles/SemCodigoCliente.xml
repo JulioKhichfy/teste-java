@@ -1,0 +1,10 @@
+<pedidos>
+    <pedido>
+        <dataCadastro>2024-03-01</dataCadastro>
+        <numeroControle>123</numeroControle>
+        <nome>Produto A</nome>
+        <valor>100.0</valor>
+        <quantidade>2</quantidade>
+        <codigoCliente></codigoCliente>
+    </pedido>
+</pedidos>

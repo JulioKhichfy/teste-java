@@ -5,20 +5,20 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.util.List;
 
 @XmlRootElement(name = "pedidos")
-public class PedidoListDTO {
+public class OrderListDTO {
 
-    private List<PedidoDTO> pedidos;
+    private List<OrderDTO> pedidos;
 
-    public PedidoListDTO() {
+    public OrderListDTO() {
         // Construtor padrão necessário para a desserialização
     }
 
     @XmlElement(name = "pedido")
-    public List<PedidoDTO> getPedidos() {
+    public List<OrderDTO> getPedidos() {
         return pedidos;
     }
 
-    public void setPedidos(List<PedidoDTO> pedidos) {
+    public void setPedidos(List<OrderDTO> pedidos) {
         this.pedidos = pedidos;
     }
 }

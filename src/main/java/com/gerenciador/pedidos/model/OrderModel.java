@@ -7,7 +7,7 @@ import java.util.List;
 
 @Entity
 @Table( name = "pedido" )
-public class ProdutoModel {
+public class OrderModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +15,7 @@ public class ProdutoModel {
 
     @ManyToOne
     @JoinColumn(name = "cliente_id")
-    private ClienteModel cliente;
+    private ClientModel cliente;
 
     @Column(name = "data_pedido")
     private LocalDate dataPedido;
@@ -24,13 +24,13 @@ public class ProdutoModel {
     private BigDecimal total;
 
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedidoModel> itens;
+    private List<OrderItemModel> itens;
 
-    public List<ItemPedidoModel> getItens() {
+    public List<OrderItemModel> getItens() {
         return itens;
     }
 
-    public void setItens(List<ItemPedidoModel> itens) {
+    public void setItens(List<OrderItemModel> itens) {
         this.itens = itens;
     }
 
@@ -42,11 +42,11 @@ public class ProdutoModel {
         this.id = id;
     }
 
-    public ClienteModel getCliente() {
+    public ClientModel getCliente() {
         return cliente;
     }
 
-    public void setCliente(ClienteModel cliente) {
+    public void setCliente(ClientModel cliente) {
         this.cliente = cliente;
     }
 

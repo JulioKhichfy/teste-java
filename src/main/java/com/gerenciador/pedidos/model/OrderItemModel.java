@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 
 @Entity
 @Table( name = "item_pedido" )
-public class ItemPedidoModel {
+public class OrderItemModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,7 +14,7 @@ public class ItemPedidoModel {
 
     @ManyToOne
     @JoinColumn(name = "pedido_id")
-    private ProdutoModel pedido;
+    private OrderModel pedido;
 
     @Column
     private Integer quantidade;
@@ -36,11 +36,11 @@ public class ItemPedidoModel {
         this.id = id;
     }
 
-    public ProdutoModel getPedido() {
+    public OrderModel getPedido() {
         return pedido;
     }
 
-    public void setPedido(ProdutoModel pedido) {
+    public void setPedido(OrderModel pedido) {
         this.pedido = pedido;
     }
 

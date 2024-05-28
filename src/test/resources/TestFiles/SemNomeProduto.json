@@ -1,0 +1,11 @@
+{
+  "pedidos": [
+    {
+      "numeroControle": 124,
+      "dataCadastro": "2024-01-01",
+      "valor": 100.0,
+      "quantidade": 2,
+      "codigoCliente": 1
+    }
+  ]
+}

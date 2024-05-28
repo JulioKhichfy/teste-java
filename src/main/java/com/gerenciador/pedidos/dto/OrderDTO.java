@@ -6,7 +6,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDate;
 
 @XmlRootElement(name = "pedido")
-public class PedidoDTO {
+public class OrderDTO {
 
     private int numeroControle;
     private String dataCadastro;
@@ -15,7 +15,7 @@ public class PedidoDTO {
     private int quantidade;
     private int codigoCliente;
 
-    public PedidoDTO() {
+    public OrderDTO() {
         // Construtor padrão necessário para a desserialização
     }
 
