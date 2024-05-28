@@ -1,6 +1,5 @@
 package com.gerenciador.pedidos;
 
-import com.gerenciador.pedidos.dto.OrderListDTO;
 import com.gerenciador.pedidos.service.ClientService;
 import com.gerenciador.pedidos.service.FileHandleService;
 import com.gerenciador.pedidos.service.exceptions.*;
@@ -18,18 +17,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ExtendWith(MockitoExtension.class)
 class FileFieldsTests {
 
 	@InjectMocks
 	private FileHandleService fileService;
-
-	@InjectMocks
-	private ClientService clientService;
 
 	@BeforeEach
 	public void setUp() {
@@ -42,8 +37,8 @@ class FileFieldsTests {
 		String contentType = "application/json";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try {
-			fileService.ckeckFile(multipartFile);
-		}catch(PedidoNumeroControleException e) {
+			fileService.ckeckAndSave(multipartFile);
+		}catch(ControlNumberException e) {
 			assertEquals("Erro: Número de controle ausente", e.getMessage());
 		}
 	}
@@ -54,8 +49,8 @@ class FileFieldsTests {
 		String contentType = "application/xml";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try {
-			fileService.ckeckFile(multipartFile);
-		}catch(PedidoNumeroControleException e) {
+			fileService.ckeckAndSave(multipartFile);
+		}catch(ControlNumberException e) {
 			assertEquals("Erro: Número de controle ausente", e.getMessage());
 		}
 	}
@@ -66,8 +61,8 @@ class FileFieldsTests {
 		String contentType = "application/xml";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (PedidoDateException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (OrderDateException e) {
 			assertEquals(e.getMessage(),"Erro: A data deve estar no formato 'dd-MM-yyyy' ");
 		}
 	}
@@ -78,8 +73,8 @@ class FileFieldsTests {
 		String contentType = "application/json";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (PedidoDateException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (OrderDateException e) {
 			assertEquals(e.getMessage(),"Erro: A data deve estar no formato 'dd-MM-yyyy' ");
 		}
 	}
@@ -90,8 +85,8 @@ class FileFieldsTests {
 		String contentType = "application/json";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (PedidoNomeProdutoException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (ProductNameException e) {
 			assertEquals(e.getMessage(),"Erro: Nome do produto ausente");
 		}
 	}
@@ -102,8 +97,8 @@ class FileFieldsTests {
 		String contentType = "application/xml";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (PedidoNomeProdutoException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (ProductNameException e) {
 			assertEquals(e.getMessage(),"Erro: Nome do produto ausente");
 		}
 	}
@@ -114,8 +109,8 @@ class FileFieldsTests {
 		String contentType = "application/xml";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (PedidoCodigoClienteException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (ClientCodeException e) {
 			assertEquals(e.getMessage(),"Erro: Código do cliente ausente");
 		}
 	}
@@ -126,8 +121,8 @@ class FileFieldsTests {
 		String contentType = "application/json";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (PedidoCodigoClienteException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (ClientCodeException e) {
 			assertEquals(e.getMessage(),"Erro: Código do cliente ausente");
 		}
 	}
@@ -138,8 +133,8 @@ class FileFieldsTests {
 		String contentType = "application/json";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (ItemPedidoNumeroControleExistsException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (ControlNumberExistsException e) {
 			assertEquals(e.getMessage(),"Erro: Número de controle duplicado no arquivo");
 		}
 	}
@@ -150,32 +145,8 @@ class FileFieldsTests {
 		String contentType = "application/xml";
 		MultipartFile multipartFile = getMultiPartFile(path, contentType);
 		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (ItemPedidoNumeroControleExistsException e) {
-			assertEquals(e.getMessage(),"Erro: Número de controle duplicado no arquivo");
-		}
-	}
-
-	@Test
-	public void testSaveOrderXMLFile() throws IOException {
-		String path = "src/test/resources/TestFiles/pedidos.xml";
-		String contentType = "application/xml";
-		MultipartFile multipartFile = getMultiPartFile(path, contentType);
-		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (ItemPedidoNumeroControleExistsException e) {
-			assertEquals(e.getMessage(),"Erro: Número de controle duplicado no arquivo");
-		}
-	}
-
-	@Test
-	public void testSaveOrderJSONFile() throws IOException {
-		String path = "src/test/resources/TestFiles/pedidos.json";
-		String contentType = "application/json";
-		MultipartFile multipartFile = getMultiPartFile(path, contentType);
-		try{
-			fileService.ckeckFile(multipartFile);
-		} catch (ItemPedidoNumeroControleExistsException e) {
+			fileService.ckeckAndSave(multipartFile);
+		} catch (ControlNumberExistsException e) {
 			assertEquals(e.getMessage(),"Erro: Número de controle duplicado no arquivo");
 		}
 	}

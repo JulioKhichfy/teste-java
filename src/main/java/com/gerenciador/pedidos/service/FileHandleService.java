@@ -33,7 +33,7 @@ public class FileHandleService {
     @Autowired
     private OrderItemService orderItemService;
 
-    public void ckeckFile(MultipartFile file)  {
+    public void ckeckAndSave(MultipartFile file)  {
         OrderListDTO orderListDTO = parserFileToDTO(file);
         checkFields(orderListDTO);
         checkDataBase(orderListDTO);
@@ -64,14 +64,14 @@ public class FileHandleService {
             }
 
             if (orderListDTO == null) {
-                throw new PedidoNullableException("Erro: Verifique se o arquivo enviado encontra-se no padrão pré-definido");
+                throw new OrderNullableException("Erro: Verifique se o arquivo enviado encontra-se no padrão pré-definido");
             }
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOPedidoException(e.getMessage(), e.getCause());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new PedidoException(e.getMessage(), e.getCause());
+            throw new OrderException(e.getMessage(), e.getCause());
         }
 
         return orderListDTO;
@@ -173,14 +173,14 @@ public class FileHandleService {
 
         //O arquivo pode conter 1 ou mais pedidos, limitado a 10.
         if(orderListDTO.getPedidos().size() > 10) {
-            throw new PedidoQuantidadeException("Erro: Favor informar no máximo 10 pedidos");
+            throw new OrderSizeException("Erro: Favor informar no máximo 10 pedidos");
         }
 
         HashSet<Integer> set = new HashSet<>();
         orderListDTO.getPedidos().forEach(p -> {
             //Não poderá aceitar um número de controle já cadastrado
             if (!set.add(p.getNumeroControle())) {
-                throw new ItemPedidoNumeroControleExistsException("Erro: Número de controle duplicado no arquivo");
+                throw new ControlNumberExistsException("Erro: Número de controle duplicado no arquivo");
             }
             checkControlNumber(p);
             checkDate(p);
@@ -193,7 +193,7 @@ public class FileHandleService {
     private void checkControlNumber(OrderDTO orderDTO) {
         //número controle é obrigatório
         if(orderDTO.getNumeroControle() == 0) {
-            throw new PedidoNumeroControleException("Erro: Número de controle ausente");
+            throw new ControlNumberException("Erro: Número de controle ausente");
         }
     }
 
@@ -209,14 +209,14 @@ public class FileHandleService {
         try {
             if(!hasDate) LocalDate.parse(orderDTO.getDataCadastro());
         } catch(DateTimeParseException e) {
-            throw new PedidoDateException("Erro: A data deve estar no formato 'dd-MM-yyyy' ", e.getCause());
+            throw new OrderDateException("Erro: A data deve estar no formato 'dd-MM-yyyy' ", e.getCause());
         }
     }
 
     private void checkItemName(OrderDTO orderDTO){
         //nome do produto obrigatório
         if(orderDTO.getNome() == null || orderDTO.getNome().isBlank()) {
-            throw new PedidoNomeProdutoException("Erro: Nome do produto ausente");
+            throw new ProductNameException("Erro: Nome do produto ausente");
         }
     }
 
@@ -230,7 +230,7 @@ public class FileHandleService {
     private void checkClientCode(OrderDTO orderDTO){
         //codigo cliente obrigatório.
         if(orderDTO.getCodigoCliente() == 0){
-            throw new PedidoCodigoClienteException("Erro: Código do cliente ausente");
+            throw new ClientCodeException("Erro: Código do cliente ausente");
         }
     }
 
@@ -238,7 +238,7 @@ public class FileHandleService {
         orderListDTO.getPedidos().forEach(order -> {
             //Não poderá aceitar um número de controle já cadastrado.
             if(orderItemService.existsByNumeroControle(order.getNumeroControle())){
-                throw new ItemPedidoNumeroControleExistsException("Erro: Número de controle informado já existe no banco de dados");
+                throw new ControlNumberExistsException("Erro: Número de controle informado já existe no banco de dados");
             }
         });
     }

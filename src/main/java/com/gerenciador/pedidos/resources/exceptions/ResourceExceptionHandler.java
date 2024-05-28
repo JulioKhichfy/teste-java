@@ -16,44 +16,44 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
     }
 
-    @ExceptionHandler(PedidoException.class)
-    public ResponseEntity<StandardError> pedidoException(PedidoException e, HttpServletRequest request) {
+    @ExceptionHandler(OrderException.class)
+    public ResponseEntity<StandardError> orderException(OrderException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(err);
     }
 
-    @ExceptionHandler(PedidoNullableException.class)
-    public ResponseEntity<StandardError> pedidoNullableException(PedidoNullableException e, HttpServletRequest request) {
+    @ExceptionHandler(OrderNullableException.class)
+    public ResponseEntity<StandardError> orderNullableException(OrderNullableException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(PedidoQuantidadeException.class)
-    public ResponseEntity<StandardError> pedidoQuantidadeException(PedidoQuantidadeException e, HttpServletRequest request) {
+    @ExceptionHandler(OrderSizeException.class)
+    public ResponseEntity<StandardError> orderSizeException(OrderSizeException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(PedidoNumeroControleException.class)
-    public ResponseEntity<StandardError> pedidoQuantidadeException(PedidoNumeroControleException e, HttpServletRequest request) {
+    @ExceptionHandler(ControlNumberException.class)
+    public ResponseEntity<StandardError> controlNumberException(ControlNumberException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(PedidoNomeProdutoException.class)
-    public ResponseEntity<StandardError> pedidoNomeProdutoException(PedidoNomeProdutoException e, HttpServletRequest request) {
+    @ExceptionHandler(ProductNameException.class)
+    public ResponseEntity<StandardError> productNameException(ProductNameException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(ItemPedidoNumeroControleExistsException.class)
-    public ResponseEntity<StandardError> pedidoNumeroControleExistsException(ItemPedidoNumeroControleExistsException e, HttpServletRequest request) {
+    @ExceptionHandler(ControlNumberExistsException.class)
+    public ResponseEntity<StandardError> controlNumberExistsException(ControlNumberExistsException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(PedidoCodigoClienteException.class)
-    public ResponseEntity<StandardError> pedidoCodigoClienteException(PedidoCodigoClienteException e, HttpServletRequest request) {
+    @ExceptionHandler(ClientCodeException.class)
+    public ResponseEntity<StandardError> clientCodeException(ClientCodeException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
@@ -70,8 +70,8 @@ public class ResourceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }
 
-    @ExceptionHandler(PedidoDateException.class)
-    public ResponseEntity<StandardError> pedidoDateException(PedidoDateException e, HttpServletRequest request) {
+    @ExceptionHandler(OrderDateException.class)
+    public ResponseEntity<StandardError> orderDateException(OrderDateException e, HttpServletRequest request) {
         StandardError err = new StandardError(HttpStatus.BAD_REQUEST.value(), e.getMessage(), System.currentTimeMillis());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(err);
     }

@@ -1,13 +1,13 @@
 package com.gerenciador.pedidos.service.exceptions;
 
-public class PedidoDateException extends RuntimeException {
+public class ClientCodeException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    public PedidoDateException(String msg) {
+    public ClientCodeException(String msg) {
         super(msg);
     }
 
-    public PedidoDateException(String msg, Throwable cause) {
+    public ClientCodeException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }

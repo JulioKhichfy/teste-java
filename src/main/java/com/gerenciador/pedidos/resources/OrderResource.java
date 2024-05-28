@@ -1,15 +1,10 @@
 package com.gerenciador.pedidos.resources;
 
-import com.gerenciador.pedidos.dto.OrderListDTO;
 import com.gerenciador.pedidos.model.ClientModel;
 import com.gerenciador.pedidos.service.ClientService;
 import com.gerenciador.pedidos.service.FileHandleService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -25,9 +20,24 @@ public class OrderResource {
     private ClientService clientService;
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadFile(@RequestBody MultipartFile file) {
-        fileHandleService.ckeckFile(file);
-        return ResponseEntity.ok(201);
+    public List<ClientModel> uploadFile(@RequestBody MultipartFile file) {
+        fileHandleService.ckeckAndSave(file);
+        return clientService.findAll();
     }
+
+
+    /*Criar um serviço onde possa consultar os pedidos enviados pelos clientes.
+    Critérios aceitação:
+
+    O retorno deve trazer todos os dados do pedido.
+
+    filtros da consulta:
+    número pedido, data cadastro, todos*/
+
+    @GetMapping
+    public List<ClientModel> findAll() {
+        return clientService.findAll();
+    }
+
 }
 
