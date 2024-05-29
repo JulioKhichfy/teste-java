@@ -1,25 +1,18 @@
 <pedidos>
     <pedido>
-        <numeroControle>123</numeroControle>
-        <dataCadastro>2024-01-01</dataCadastro>
-        <nome>Produto A</nome>
-        <valor>100.0</valor>
-        <quantidade>2</quantidade>
         <codigoCliente>1</codigoCliente>
-    </pedido>
-    <pedido>
-        <numeroControle>124</numeroControle>
-        <dataCadastro>2024-01-02</dataCadastro>
-        <nome>Produto B</nome>
-        <valor>200.0</valor>
-        <quantidade>3</quantidade>
-        <codigoCliente>2</codigoCliente>
-    </pedido>
-    <pedido>
-        <dataCadastro>2024-01-03</dataCadastro>
-        <nome>Produto B</nome>
-        <valor>200.0</valor>
-        <quantidade>3</quantidade>
-        <codigoCliente>2</codigoCliente>
+        <dataCadastro>2024-01-01</dataCadastro>
+        <items>
+            <item>
+                <nome>PRODUTO j</nome>
+                <valor>100.0</valor>
+                <quantidade>2</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO k</nome>
+                <valor>200.0</valor>
+                <quantidade>3</quantidade>
+            </item>
+        </items>
     </pedido>
 </pedidos>

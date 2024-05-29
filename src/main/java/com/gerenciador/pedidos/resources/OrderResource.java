@@ -3,6 +3,7 @@ package com.gerenciador.pedidos.resources;
 import com.gerenciador.pedidos.model.ClientModel;
 import com.gerenciador.pedidos.service.ClientService;
 import com.gerenciador.pedidos.service.FileHandleService;
+import com.gerenciador.pedidos.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,9 +20,14 @@ public class OrderResource {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private OrderService orderService;
+
     @PostMapping("/upload")
     public List<ClientModel> uploadFile(@RequestBody MultipartFile file) {
-        fileHandleService.processFile(file);
+        List<ClientModel> clients = fileHandleService.processFile(file);
+        orderService.checkNumeroControleInDataBase(clients);
+        clientService.saveOrUpdate(clients);
         return clientService.findAll();
     }
 

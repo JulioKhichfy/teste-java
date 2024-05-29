@@ -24,25 +24,22 @@ Filtros da consulta:
 
 ```json
 {
-    "pedidos": [
+  "pedidos": [
+    {
+      "numeroControle": 124,
+      "codigoCliente": 1,
+      "dataCadastro": "2024-01-05",
+      "items" : [
         {
-            "numeroControle": 123,
-            "dataCadastro": "2024-01-01",
-            "nome": "Produto A",
-            "valor": 100.0,
-            "quantidade": 2,
-            "codigoCliente": 1
-        },
-        {
-            "numeroControle": 124,
-            "dataCadastro": "2024-01-02",
-            "nome": "Produto B",
-            "valor": 200.0,
-            "quantidade": 3,
-            "codigoCliente": 2
+          "nome": "Produto A",
+          "valor": 100.0,
+          "quantidade": 2
         }
-    ]
+      ]
+    }
+  ]
 }
+
 ```
 
 #### Exemplo de arquivo XML
@@ -51,21 +48,23 @@ Filtros da consulta:
 <pedidos>
     <pedido>
         <numeroControle>123</numeroControle>
-        <dataCadastro>"2024-01-01"</dataCadastro>
-        <nome>"Produto A"</nome>
-        <valor>100.0</valor>
-        <quantidade>2</quantidade>
         <codigoCliente>1</codigoCliente>
-    </pedido>
-    <pedido>
-        <numeroControle>124</numeroControle>
-        <dataCadastro>"2024-01-02"</dataCadastro>
-        <nome>"Produto B"</nome>
-        <valor>200.0</valor>
-        <quantidade>3</quantidade>
-        <codigoCliente>2</codigoCliente>
+        <dataCadastro>2024-01-01</dataCadastro>
+        <items>
+            <item>
+                <nome>PRODUTO j</nome>
+                <valor>100.0</valor>
+                <quantidade>2</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO k</nome>
+                <valor>200.0</valor>
+                <quantidade>3</quantidade>
+            </item>
+        </items>
     </pedido>
 </pedidos>
+
 ```
 Critérios aceitação e manipulação do arquivo:
 
@@ -90,8 +89,12 @@ As tabelas serão geradas, assim como uma carga inicial de 10 clientes, ao inici
 
 #### Mysql
 
-Por padrão o sistema utiliza o ***mysql*** definido no 
-```application-dev.properties```:
+Por padrão o sistema utiliza o ***mysql*** definido no
+***application.properties***:
+
+```01 spring.profiles.active=dev```
+
+***application-dev.properties***:
 ```
 spring.datasource.url=jdbc:mysql://localhost:3306/teste_julio_db
 spring.datasource.username=root
@@ -104,6 +107,7 @@ Para utilizar o H2 em memória, alterar o arquivo ```application.properties```
 na linha 1 para ***spring.profiles.active=test*** e depois de iniciada a aplicação acessar:
 http://localhost:8080/h2-console
 
+***application-test.properties***:
 ```
 spring.datasource.url=jdbc:h2:mem:teste_julio_db
 spring.datasource.username=sa

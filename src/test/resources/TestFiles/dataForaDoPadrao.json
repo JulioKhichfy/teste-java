@@ -2,11 +2,15 @@
   "pedidos": [
     {
       "numeroControle": 124,
+      "codigoCliente": 1,
       "dataCadastro": "01/03/2024",
-      "nome": "Produto A",
-      "valor": 100.0,
-      "quantidade": 2,
-      "codigoCliente": 1
+      "items" : [
+        {
+          "nome": "Produto A",
+          "valor": 100.0,
+          "quantidade": 2
+        }
+      ]
     }
   ]
 }

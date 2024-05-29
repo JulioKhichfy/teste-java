@@ -1,9 +1,18 @@
 <pedidos>
     <pedido>
-        <dataCadastro>2024-01-01</dataCadastro>
         <numeroControle>123</numeroControle>
-        <valor>100.0</valor>
-        <quantidade>2</quantidade>
         <codigoCliente>1</codigoCliente>
+        <dataCadastro>2024-01-01</dataCadastro>
+        <items>
+            <item>
+                <valor>100.0</valor>
+                <quantidade>2</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO k</nome>
+                <valor>200.0</valor>
+                <quantidade>3</quantidade>
+            </item>
+        </items>
     </pedido>
 </pedidos>

@@ -5,6 +5,7 @@ import com.gerenciador.pedidos.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,5 +39,17 @@ public class ClientService {
 
     public List<ClientModel> saveAll(List<ClientModel> clientes) {
         return clientRepository.saveAll(clientes);
+    }
+
+    public void saveOrUpdate(List<ClientModel> clients) {
+        List<ClientModel> clientsTOSaveOrUpdate = new ArrayList<>();
+        for(ClientModel clientModel : clients) {
+            ClientModel clientBD = clientRepository.findByCodigo(clientModel.getCodigo());
+            if(clientBD != null){
+                clientModel.setId(clientBD.getId());
+            }
+            clientsTOSaveOrUpdate.add(clientModel);
+        }
+        saveAll(clients);
     }
 }

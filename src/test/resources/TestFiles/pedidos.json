@@ -2,19 +2,51 @@
   "pedidos": [
     {
       "numeroControle": 124,
-      "dataCadastro": "2024-01-02",
-      "nome": "mouse",
-      "valor": 100.0,
-      "quantidade": 2,
-      "codigoCliente": 1
+      "codigoCliente": 1,
+      "dataCadastro": "2024-01-05",
+      "items" : [
+        {
+          "nome": "Produto A",
+          "valor": 100.0,
+          "quantidade": 2
+        }
+      ]
     },
     {
       "numeroControle": 125,
-      "dataCadastro": "2024-01-02",
-      "nome": "Teclado",
-      "valor": 200.0,
-      "quantidade": 3,
-      "codigoCliente": 1
+      "codigoCliente": 1,
+      "dataCadastro": "2024-01-06",
+      "items" : [
+        {
+          "nome": "Produto B",
+          "valor": 100.0,
+          "quantidade": 5
+        }
+      ]
+    },
+    {
+      "numeroControle": 126,
+      "codigoCliente": 2,
+      "dataCadastro": "2024-01-16",
+      "items" : [
+        {
+          "nome": "Produto C",
+          "valor": 700.0,
+          "quantidade": 10
+        }
+      ]
+    },
+    {
+      "numeroControle": 127,
+      "codigoCliente": 1000,
+      "dataCadastro": "2024-01-16",
+      "items" : [
+        {
+          "nome": "Produto F",
+          "valor": 300.0,
+          "quantidade": 5
+        }
+      ]
     }
   ]
 }

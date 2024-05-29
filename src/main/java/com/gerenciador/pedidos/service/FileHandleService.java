@@ -1,79 +1,30 @@
 package com.gerenciador.pedidos.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gerenciador.pedidos.converter.Converter;
-import com.gerenciador.pedidos.converter.FileToDTO;
 import com.gerenciador.pedidos.dto.ItemDTO;
 import com.gerenciador.pedidos.dto.OrderDTO;
 import com.gerenciador.pedidos.dto.OrderListDTO;
 import com.gerenciador.pedidos.model.ClientModel;
-import com.gerenciador.pedidos.model.OrderItemModel;
-import com.gerenciador.pedidos.model.OrderModel;
 import com.gerenciador.pedidos.service.exceptions.*;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Unmarshaller;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Service
 public class FileHandleService {
 
     private Logger logger = Logger.getLogger(FileHandleService.class.getName());
 
-    @Autowired
-    private ClientService clientService;
+    public List<ClientModel> processFile(MultipartFile file)  {
 
-    @Autowired
-    private OrderService orderService;
-
-    public void processFile(MultipartFile file)  {
         OrderListDTO orderListDTO = Converter.fileToDTO(file);
         checkFields(orderListDTO);
         List<ClientModel> clients = Converter.DtoToModel(orderListDTO);
-        checkDataBase(clients);
-        saveOrUpdate(clients);
-        List<ClientModel> all = clientService.findAll();
-    }
-    public void saveOrUpdate(List<ClientModel> clients) {
-        List<ClientModel> clientsTOSaveOrUpdate = new ArrayList<>();
-        for(ClientModel clientModel : clients) {
-            ClientModel clientBD = clientService.findByCodigo(clientModel.getCodigo());
-            if(clientBD != null){
-                clientModel.setId(clientBD.getId());
-            }
-            clientsTOSaveOrUpdate.add(clientModel);
-        }
-        clientService.saveAll(clients);
-    }
-
-    public void checkDataBase(List<ClientModel> clients) {
-
-            List<Integer> numerosControle = new ArrayList<>();
-
-            for(ClientModel clientModel : clients) {
-                List<OrderModel> orders = clientModel.getPedidos();
-                List<Integer> numerosControleByClient = clientModel.getPedidos().stream()
-                        .map(OrderModel::getNumeroControle)
-                        .collect(Collectors.toList());
-                numerosControle.addAll(numerosControleByClient);
-            }
-
-            //Não poderá aceitar um número de controle já cadastrado.
-            long count = orderService.countByNumeroControleIn(numerosControle);
-            if(count > 0){
-                throw new ControlNumberExistsException("Erro: Número de controle já está cadastrado");
-            }
-
+        return clients;
     }
 
     private void checkFields(OrderListDTO orderListDTO) {

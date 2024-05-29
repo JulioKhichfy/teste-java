@@ -3,9 +3,14 @@
     {
       "numeroControle": 124,
       "dataCadastro": "2024-01-01",
-      "nome": "Produto A",
-      "valor": 100.0,
-      "quantidade": 2
+      "items" : [
+        {
+          "nome": "Produto A",
+          "valor": 100.0,
+          "quantidade": 2
+        }
+      ]
     }
   ]
 }
+
