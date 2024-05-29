@@ -1,5 +1,6 @@
 package com.gerenciador.pedidos.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 
@@ -9,6 +10,7 @@ public class ItemDTO {
     private String nome;
     private double valor;
     private int quantidade;
+    private double valorTotal;
 
     public ItemDTO() {
         // Construtor padrão necessário para a desserialização
@@ -39,5 +41,13 @@ public class ItemDTO {
 
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
+    }
+
+    public double getValorTotal() {
+        return valorTotal;
+    }
+
+    public void setValorTotal(double valorTotal) {
+        this.valorTotal = valorTotal;
     }
 }
