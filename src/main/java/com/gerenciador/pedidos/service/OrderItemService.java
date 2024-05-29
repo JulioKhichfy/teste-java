@@ -25,7 +25,5 @@ public class OrderItemService {
         return orderItemRepository.save(itemPedido);
     }
 
-    public boolean existsByNumeroControle(Integer numeroControle){
-        return orderItemRepository.existsByNumeroControle(numeroControle);
-    }
+
 }

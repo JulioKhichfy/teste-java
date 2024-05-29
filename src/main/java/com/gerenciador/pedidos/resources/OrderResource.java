@@ -21,7 +21,7 @@ public class OrderResource {
 
     @PostMapping("/upload")
     public List<ClientModel> uploadFile(@RequestBody MultipartFile file) {
-        fileHandleService.ckeckAndSave(file);
+        fileHandleService.processFile(file);
         return clientService.findAll();
     }
 

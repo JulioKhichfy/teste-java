@@ -1,6 +1,9 @@
 package com.gerenciador.pedidos.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gerenciador.pedidos.converter.Converter;
+import com.gerenciador.pedidos.converter.FileToDTO;
+import com.gerenciador.pedidos.dto.ItemDTO;
 import com.gerenciador.pedidos.dto.OrderDTO;
 import com.gerenciador.pedidos.dto.OrderListDTO;
 import com.gerenciador.pedidos.model.ClientModel;
@@ -31,142 +34,46 @@ public class FileHandleService {
     private ClientService clientService;
 
     @Autowired
-    private OrderItemService orderItemService;
+    private OrderService orderService;
 
-    public void ckeckAndSave(MultipartFile file)  {
-        OrderListDTO orderListDTO = parserFileToDTO(file);
+    public void processFile(MultipartFile file)  {
+        OrderListDTO orderListDTO = Converter.fileToDTO(file);
         checkFields(orderListDTO);
-        checkDataBase(orderListDTO);
-        List<ClientModel> clients = groupingByClientAndDate(orderListDTO);
+        List<ClientModel> clients = Converter.DtoToModel(orderListDTO);
+        checkDataBase(clients);
+        saveOrUpdate(clients);
+        List<ClientModel> all = clientService.findAll();
+    }
+    public void saveOrUpdate(List<ClientModel> clients) {
+        List<ClientModel> clientsTOSaveOrUpdate = new ArrayList<>();
+        for(ClientModel clientModel : clients) {
+            ClientModel clientBD = clientService.findByCodigo(clientModel.getCodigo());
+            if(clientBD != null){
+                clientModel.setId(clientBD.getId());
+            }
+            clientsTOSaveOrUpdate.add(clientModel);
+        }
         clientService.saveAll(clients);
     }
 
-    private OrderListDTO parserFileToDTO(MultipartFile file){
-        OrderListDTO orderListDTO = null;
+    public void checkDataBase(List<ClientModel> clients) {
 
-        if(file == null) {
-            throw new FileNullableException("Erro: O arquivo JSON ou XML não foi anexado.");
-        }
+            List<Integer> numerosControle = new ArrayList<>();
 
-        try {
-            String filename = file.getOriginalFilename();
-            InputStream inputStream = file.getInputStream();
-
-            if (filename != null && (filename.endsWith(".json") || filename.endsWith(".JSON"))) {
-                ObjectMapper objectMapper = new ObjectMapper();
-                orderListDTO = objectMapper.readValue(inputStream, OrderListDTO.class);
-            } else if (filename != null && (filename.endsWith(".xml") || filename.endsWith(".XML"))) {
-                JAXBContext jaxbContext = JAXBContext.newInstance(OrderListDTO.class);
-                Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-                orderListDTO = (OrderListDTO) unmarshaller.unmarshal(inputStream);
-            } else {
-                throw new FileExtensionException("Erro: Apenas são permitidos arquivos dos tipos JSON ou XML.");
+            for(ClientModel clientModel : clients) {
+                List<OrderModel> orders = clientModel.getPedidos();
+                List<Integer> numerosControleByClient = clientModel.getPedidos().stream()
+                        .map(OrderModel::getNumeroControle)
+                        .collect(Collectors.toList());
+                numerosControle.addAll(numerosControleByClient);
             }
 
-            if (orderListDTO == null) {
-                throw new OrderNullableException("Erro: Verifique se o arquivo enviado encontra-se no padrão pré-definido");
+            //Não poderá aceitar um número de controle já cadastrado.
+            long count = orderService.countByNumeroControleIn(numerosControle);
+            if(count > 0){
+                throw new ControlNumberExistsException("Erro: Número de controle já está cadastrado");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IOPedidoException(e.getMessage(), e.getCause());
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new OrderException(e.getMessage(), e.getCause());
-        }
 
-        return orderListDTO;
-
-    }
-
-    private List<ClientModel> groupingByClientAndDate(OrderListDTO pedidoList){
-        List<ClientModel> clientes = new ArrayList<>();
-
-        //Obter todos os pedidos de um cliente
-        Map<Integer, List<OrderDTO>> pedidosPorCliente = pedidoList.getPedidos().stream()
-                .collect(Collectors.groupingBy(OrderDTO::getCodigoCliente));
-
-        //para cada cliente, organizar seus pedidos por data
-        pedidosPorCliente.forEach((codigoCliente, pedidosList) -> {
-            ClientModel cli = prepararCliente(codigoCliente, pedidosList);
-            clientes.add(cli);
-        });
-
-        return clientes;
-    }
-
-    /*@Transactional
-    private void saveOrUpdateClientes(List<ClientModel> clientes){
-        clienteService.saveAll(clientes);
-    }*/
-
-    private Map<String, List<OrderDTO>> pedidosClienteByData(List<OrderDTO> pedidosDTO){
-        Map<String, List<OrderDTO>> pedidosPorData = new HashMap<>();
-        for(OrderDTO pedidoDTO : pedidosDTO) {
-            if (!pedidosPorData.containsKey(pedidoDTO.getDataCadastro())) {
-                List<OrderDTO> pedidos = new ArrayList<>();
-                pedidos.add(pedidoDTO);
-                pedidosPorData.put(pedidoDTO.getDataCadastro(), pedidos);
-            } else {
-                List<OrderDTO> pedidosFromMap = pedidosPorData.get(pedidoDTO.getDataCadastro());
-                pedidosFromMap.add(pedidoDTO);
-                pedidosPorData.put(pedidoDTO.getDataCadastro(), pedidosFromMap);
-            }
-        }
-        return pedidosPorData;
-    }
-
-    //cliente especifico e sua lista de pedidos
-    private ClientModel prepararCliente(Integer codigoCliente, List<OrderDTO> pedidosDTO){
-        ClientModel cliente = clientService.findByCodigo(codigoCliente);
-        if(cliente == null) {
-            cliente = new ClientModel();
-            cliente.setCodigo(codigoCliente);
-        }
-
-        //pedidos do cliente especifico indexado por data
-        Map<String, List<OrderDTO>> pedidosPorData = pedidosClienteByData(pedidosDTO);
-        List<OrderModel> pedidosModel = new ArrayList<>();
-
-        ClientModel finalCliente = cliente;
-        pedidosPorData.forEach((dataPedido, pedidosList) -> {
-            List<OrderItemModel> itens = new ArrayList<>();
-            OrderModel pedido = new OrderModel();
-            pedido.setCliente(finalCliente);
-            pedido.setDataPedido(LocalDate.parse(dataPedido));
-            double total = 0;
-            int quantidadeTotal = 0;
-
-            for(OrderDTO pedidoDTO : pedidosList){
-                OrderItemModel item = new OrderItemModel();
-                item.setPrecoUnitario(BigDecimal.valueOf(pedidoDTO.getValor()));
-                item.setNome(pedidoDTO.getNome());
-                quantidadeTotal += pedidoDTO.getQuantidade();
-                item.setQuantidade(pedidoDTO.getQuantidade());
-                item.setNumeroControle(pedidoDTO.getNumeroControle());
-                item.setPedido(pedido);
-                itens.add(item);
-                total+=pedidoDTO.getValor() * pedidoDTO.getQuantidade();;
-            }
-            pedido.setItens(itens);
-            BigDecimal pedidoTotal = aplicarDesconto(quantidadeTotal, total);
-            pedido.setTotal(pedidoTotal);
-            pedidosModel.add(pedido);
-        });
-
-        cliente.setPedidos(pedidosModel);
-        return cliente;
-    }
-
-    private BigDecimal aplicarDesconto(Integer quantidadeTotal, double total){
-
-        if(quantidadeTotal >=5 && quantidadeTotal <10){
-            total = total * 0.95;
-        }
-        if(quantidadeTotal >=10){
-            total = total * 0.90;
-        }
-
-        return BigDecimal.valueOf(total);
     }
 
     private void checkFields(OrderListDTO orderListDTO) {
@@ -177,27 +84,29 @@ public class FileHandleService {
         }
 
         HashSet<Integer> set = new HashSet<>();
-        orderListDTO.getPedidos().forEach(p -> {
-            //Não poderá aceitar um número de controle já cadastrado
-            if (!set.add(p.getNumeroControle())) {
-                throw new ControlNumberExistsException("Erro: Número de controle duplicado no arquivo");
-            }
-            checkControlNumber(p);
-            checkDate(p);
-            checkItemName(p);
-            checkItemQuantity(p);
-            checkClientCode(p);
+        orderListDTO.getPedidos().forEach(orderDTO -> {
+
+            checkControlNumber(orderDTO, set);
+            checkDate(orderDTO);
+            checkItemName(orderDTO);
+            checkItemQuantity(orderDTO);
+            checkClientCode(orderDTO);
         });
     }
 
-    private void checkControlNumber(OrderDTO orderDTO) {
+    private void checkControlNumber(OrderDTO orderDTO, HashSet<Integer> set) {
         //número controle é obrigatório
         if(orderDTO.getNumeroControle() == 0) {
             throw new ControlNumberException("Erro: Número de controle ausente");
         }
+
+        //Não poderá aceitar um número de controle repetido no arquivo
+        if (!set.add(orderDTO.getNumeroControle())) {
+            throw new ControlNumberExistsException("Erro: Número de controle duplicado no arquivo");
+        }
     }
 
-    private void checkDate(OrderDTO orderDTO){
+    private void checkDate(OrderDTO orderDTO) {
         boolean hasDate = false;
 
         //Caso a data de cadastro não seja enviada o sistema deve assumir a data atual.
@@ -213,17 +122,28 @@ public class FileHandleService {
         }
     }
 
-    private void checkItemName(OrderDTO orderDTO){
+    private void checkItemName(OrderDTO orderDTO) {
         //nome do produto obrigatório
-        if(orderDTO.getNome() == null || orderDTO.getNome().isBlank()) {
-            throw new ProductNameException("Erro: Nome do produto ausente");
+        List<ItemDTO> items = orderDTO.getItems();
+        if(items == null) {
+            throw new ProductNameException("Erro: Não existem items no pedido");
+        }
+
+        for(ItemDTO itemDTO : items) {
+            if(itemDTO.getNome() == null || itemDTO.getNome().isBlank()) {
+                throw new ProductNameException("Erro: Nome do produto ausente");
+            }
         }
     }
 
     private void checkItemQuantity(OrderDTO orderDTO){
         //Caso a quantidade não seja enviada considerar 1.
-        if(orderDTO.getQuantidade() == 0){
-            orderDTO.setQuantidade(1);
+        List<ItemDTO> items = orderDTO.getItems();
+
+        for(ItemDTO itemDTO : items) {
+            if(itemDTO.getQuantidade() == 0) {
+                itemDTO.setQuantidade(1);
+            }
         }
     }
 
@@ -234,12 +154,5 @@ public class FileHandleService {
         }
     }
 
-    public void checkDataBase(OrderListDTO orderListDTO) {
-        orderListDTO.getPedidos().forEach(order -> {
-            //Não poderá aceitar um número de controle já cadastrado.
-            if(orderItemService.existsByNumeroControle(order.getNumeroControle())){
-                throw new ControlNumberExistsException("Erro: Número de controle informado já existe no banco de dados");
-            }
-        });
-    }
+
 }

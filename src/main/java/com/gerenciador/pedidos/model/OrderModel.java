@@ -13,12 +13,15 @@ public class OrderModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private ClientModel cliente;
+    @Column(name = "numero_controle")
+    private Integer numeroControle;
 
     @Column(name = "data_pedido")
     private LocalDate dataPedido;
+
+    @ManyToOne
+    @JoinColumn(name = "cliente_id")
+    private ClientModel cliente;
 
     @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
@@ -64,5 +67,13 @@ public class OrderModel {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    public Integer getNumeroControle() {
+        return numeroControle;
+    }
+
+    public void setNumeroControle(Integer numeroControle) {
+        this.numeroControle = numeroControle;
     }
 }

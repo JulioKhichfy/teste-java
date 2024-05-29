@@ -3,6 +3,7 @@ package com.gerenciador.pedidos.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 @Entity
 @Table( name = "item_pedido" )
@@ -25,8 +26,8 @@ public class OrderItemModel {
     @Column(name = "preco_unitario", precision = 20, scale = 2)
     private BigDecimal precoUnitario;
 
-    @Column(name = "numero_controle")
-    private Integer numeroControle;
+    @Column(name = "preco_total", precision = 20, scale = 2)
+    private BigDecimal precoTotal;
 
     public Integer getId() {
         return id;
@@ -42,14 +43,6 @@ public class OrderItemModel {
 
     public void setPedido(OrderModel pedido) {
         this.pedido = pedido;
-    }
-
-    public Integer getNumeroControle() {
-        return numeroControle;
-    }
-
-    public void setNumeroControle(Integer numeroControle) {
-        this.numeroControle = numeroControle;
     }
 
     public Integer getQuantidade() {
@@ -74,5 +67,13 @@ public class OrderItemModel {
 
     public void setPrecoUnitario(BigDecimal precoUnitario) {
         this.precoUnitario = precoUnitario;
+    }
+
+    public BigDecimal getPrecoTotal() {
+        return precoTotal;
+    }
+
+    public void setPrecoTotal(BigDecimal precoTotal) {
+        this.precoTotal = precoTotal;
     }
 }
