@@ -1,3 +1,67 @@
+## Versões Utilizadas
+
+1. java 17.0.9
+2. springboot 3.2.5
+
+## Banco de Dados (H2 e Mysql)
+
+As tabelas serão geradas, assim como uma carga inicial de 10 clientes, ao iniciar a aplicação.
+Nome do schema: ***teste_julio_db***
+
+### H2
+
+Para facilitar os testes, por padrão o sistema utilizará o ***H2*** em memória, definido na linha 1 do arquivo
+***application.properties*** como visto abaixo:
+
+```01 spring.profiles.active=test```
+
+Link para acessar o H2 (não precisa de senha): http://localhost:8080/h2-console
+
+### MYSQL
+
+Para utilizar o ***MYSQL*** é necessário alterar o arquivo ***application.properties*** na linha 1 como visto abaixo:
+
+```01 spring.profiles.active=dev```
+
+Além disso, verifique e altere, se necessário, o usuário e a senha de acesso ao seu Mysql no arquivo
+***application-dev.properties***
+```
+spring.datasource.username=<seu_usuário>
+spring.datasource.password=<sua_senha>
+```
+
+Crie também o DB de nome: ***teste_julio_db***
+
+## Rodar a aplicação
+
+executar o comando :
+```mvn clean spring-boot:run```
+
+## Testar a aplicação com Swagger
+
+Acessar: http://localhost:8080/swagger-ui
+
+Nessa interface encontraremos os endpoints para testes:
+
+#### EndPoints
+- Encontrar pedido por número de controle, ex: 130
+
+  GET http://localhost:8080/api/pedidos/130
+
+- Listar todos os pedidos
+  
+- GET http://localhost:8080/api/pedidos
+
+- Listar todos os pedidos de uma data específica
+  
+- GET http://localhost:8080/api/pedidos/data/2024-01-02
+
+- Upload do arquivo xml ou json:
+  
+- POST http://localhost:8080/api/pedidos/upload
+
+Para facilitar os testes de upload de arquivo, 
+pode-se utilizar os arquivos dentro da pasta ```src\test\resources\TestFiles```
 
 ## Objetivo
 
@@ -72,64 +136,28 @@ Critérios aceitação e manipulação do arquivo:
 2. Não poderá aceitar um número de controle já cadastrado.
 3. Caso a data de cadastro não seja enviada o sistema deve assumir a data atual. 
 4. Caso a quantidade não seja enviada considerar 1.
-5. Caso a quantidade seja maior que 5 aplicar 5% de desconto no valor total, 
+5. ** Caso a quantidade seja maior que 5 aplicar 5% de desconto no valor total, 
 6. Caso a quantidade seja maior ou igual 10 aplicar 10% de desconto no valor total.
 7. O sistema deve calcular e gravar o valor total do pedido. 
 8. Assumir que já existe 10 clientes cadastrados, com códigos de 1 a 10. 
 
+### Política de desconto
 
-## Versões Utilizadas
+A filosofia adotada para fornecer descontos de 5% ou 10% aplica-se para a quantidade de cada item específico.
 
-1. java 17.0.9
-2. springboot 3.2.5
+Porque foi adotada essa filosofia?
 
-## Banco de Dados
+Cenário:
+"Um cliente efetua compra de 9 lápis e 1 televisão. 
+Para evitar descontos desproporcionais em relação ao custo dos ítems dentro de um mesmo pedido,
+o desconto não será fornecido no valor total do pedido, somente  terá desconto de 5% na aquisição dos lápis.
+"
 
-As tabelas serão geradas, assim como uma carga inicial de 10 clientes, ao iniciar a aplicação.
+Contudo, isso pode ser alterado de acordo com novas regras impostas pelo dono da aplicação.
 
-#### Mysql
 
-Por padrão o sistema utiliza o ***mysql*** definido no
-***application.properties***:
 
-```01 spring.profiles.active=dev```
 
-***application-dev.properties***:
-```
-spring.datasource.url=jdbc:mysql://localhost:3306/teste_julio_db
-spring.datasource.username=root
-spring.datasource.password=admin
-```
-
-#### H2
-
-Para utilizar o H2 em memória, alterar o arquivo ```application.properties```
-na linha 1 para ***spring.profiles.active=test*** e depois de iniciada a aplicação acessar:
-http://localhost:8080/h2-console
-
-***application-test.properties***:
-```
-spring.datasource.url=jdbc:h2:mem:teste_julio_db
-spring.datasource.username=sa
-spring.datasource.password=
-```
-
-## EndPoints
-- Encontrar pedido por número de controle, ex: 130
-```http://localhost:8080/api/pedidos/130```
-
-- Listar todos os pedidos 
-```http://localhost:8080/api/pedidos```
-
-- Listar todos os pedidos de uma data específica
-```http://localhost:8080/api/pedidos/data/2024-01-02```
-
-- Upload do arquivo xml ou json:
-```http://localhost:8080/api/pedidos/upload```
-
-por exemplo usando o powershell do windows para realizar o upload do arquivo pedidos.xml:
-
-```curl.exe -X POST -F "file=@C:\<seu>\<caminho>\pedidos.xml" http://localhost:8080/api/pedidos/upload```
 
 
 

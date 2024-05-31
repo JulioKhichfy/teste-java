@@ -36,7 +36,7 @@ public class OrderResource {
             @Parameter(description = "File to upload", content = @Content(mediaType = "application/octet-stream"))
             @RequestPart("file") MultipartFile file) {
         List<ClientModel> clients = fileHandleService.processFile(file);
-        orderService.checkNumeroControleInDataBase(clients);
+        orderService.checkControlNumberInDataBase(clients);
         clientService.saveOrUpdate(clients);
         return orderService.findAll();
     }

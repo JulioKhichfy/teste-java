@@ -23,10 +23,14 @@ public class FileHandleService {
     public List<ClientModel> processFile(MultipartFile file) {
         logger.info("Processar arquivo {}", file.getName());
 
-        //Converte, e verifica desconto, o arquivo xml ou json para o objeto DTO.
-        OrderListDTO orderListDTO = Converter.buildDTOFromFile(file);
+        //Converte o arquivo xml ou json para o objeto DTO.
+        OrderListDTO orderListDTO = Converter.buildOrdersDTOFromFile(file);
+
+        //Validar e/ou customizar os campos do objeto DTO
         checkFields(orderListDTO);
-        List<ClientModel> clients = Converter.DtoFromFileToModel(orderListDTO);
+
+        //Construir o objeto ClientModel com pedidos com/sem desconto
+        List<ClientModel> clients = Converter.ordersDTOToClientModel(orderListDTO);
 
         logger.info("Arquivo {} processado sem erros", file.getName());
         return clients;

@@ -5,6 +5,8 @@ import com.gerenciador.pedidos.model.ClientModel;
 import com.gerenciador.pedidos.model.OrderModel;
 import com.gerenciador.pedidos.repository.OrderRepository;
 import com.gerenciador.pedidos.service.exceptions.ControlNumberExistsException;
+import com.gerenciador.pedidos.service.exceptions.ControlNumberNotFoundException;
+import com.gerenciador.pedidos.service.exceptions.DateNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,14 +28,18 @@ public class OrderService {
 
     public OrderDTO findByControNumber(Integer controlNumber) {
         logger.info("Obter pedido com número de controle: {}",  controlNumber);
-        OrderModel order = orderRepository.findByNumeroControle(controlNumber);
+
+        var order = orderRepository.findByNumeroControle(controlNumber)
+                .orElseThrow(() -> new ControlNumberNotFoundException("Não foi encontrado pedido com esse número de controle: " + controlNumber));
+
         return Converter.convertOrderModelToOrderDTO(order);
     }
 
     public List<OrderDTO> findByDate(String dataPedido) {
         logger.info("Obter pedidos com data: {}", dataPedido);
-        List<OrderModel> orders = orderRepository.findByDataPedido(LocalDate.parse(dataPedido));
-        return Converter.buildListOrderDTO(orders);
+        var orders = orderRepository.findByDataPedido(LocalDate.parse(dataPedido));
+        if(orders.get().isEmpty())  throw new DateNotFoundException("Não foram encontrados pedidos para essa data: " + dataPedido);
+        return Converter.buildListOrderDTO(orders.get());
     }
 
     public List<OrderDTO> findAll(){
@@ -46,7 +52,7 @@ public class OrderService {
         return Converter.buildListOrderDTO(sortedOrders);
     }
 
-    public void checkNumeroControleInDataBase(List<ClientModel> clients) {
+    public void checkControlNumberInDataBase(List<ClientModel> clients) {
         logger.info("Verificar se número de controle já está cadastrado");
         List<Integer> controlNumbers = new ArrayList<>();
 
@@ -63,9 +69,9 @@ public class OrderService {
             //Importante mostrar qual o número de controle ja se encontra cadastrado
             int controlNumber = 0;
             for(Integer numControl: controlNumbers) {
-                OrderModel order = orderRepository.findByNumeroControle(numControl);
+                var order = orderRepository.findByNumeroControle(controlNumber);
                 if(order != null) {
-                    controlNumber = order.getNumeroControle();
+                    controlNumber = order.get().getNumeroControle();
                     break;
                 }
             }

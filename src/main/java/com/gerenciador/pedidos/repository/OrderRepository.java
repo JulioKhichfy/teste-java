@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderModel, Integer> {
@@ -15,9 +16,9 @@ public interface OrderRepository extends JpaRepository<OrderModel, Integer> {
     @Query("SELECT COUNT(p) FROM OrderModel p WHERE p.numeroControle IN :numerosControle")
     long countByControlNumbers(@Param("numerosControle") List<Integer> numerosControle);
 
-    OrderModel findByNumeroControle(Integer numeroControle);
+    Optional<OrderModel> findByNumeroControle(Integer numeroControle);
 
-    List<OrderModel> findByDataPedido(LocalDate dataPedido);
+    Optional<List<OrderModel>> findByDataPedido(LocalDate dataPedido);
 
 }
 

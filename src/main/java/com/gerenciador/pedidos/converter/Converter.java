@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 public class Converter {
     private static final Logger logger = LoggerFactory.getLogger(Converter.class);
 
-    public static OrderListDTO buildDTOFromFile(MultipartFile file) {
+    public static OrderListDTO buildOrdersDTOFromFile(MultipartFile file) {
         OrderListDTO orderListDTO = null;
         if(file == null) throw new FileNullableException("Erro: O arquivo JSON ou XML não foi anexado.");
         try {
@@ -58,7 +58,7 @@ public class Converter {
         return orderListDTO;
     }
 
-    public static List<ClientModel> DtoFromFileToModel(OrderListDTO orderListDTO){
+    public static List<ClientModel> ordersDTOToClientModel(OrderListDTO orderListDTO){
         List<ClientModel> clients = new ArrayList<>();
 
         //Obter todos os pedidos de um cliente
