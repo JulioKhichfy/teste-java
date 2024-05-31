@@ -67,16 +67,14 @@ public class OrderService {
         long count = orderRepository.countByControlNumbers(controlNumbers);
         if(count > 0) {
             //Importante mostrar qual o número de controle ja se encontra cadastrado
-            int controlNumber = 0;
+            //int controlNumber = 0;
             for(Integer numControl: controlNumbers) {
-                var order = orderRepository.findByNumeroControle(controlNumber);
-                if(order != null) {
-                    controlNumber = order.get().getNumeroControle();
-                    break;
+                var order = orderRepository.findByNumeroControle(numControl);
+                if(order != null && order.get() != null) {
+                    logger.error("Erro: Número de controle {} já cadastrado ", numControl);
+                    throw new ControlNumberExistsException("Erro: Número de controle já cadastrado " + numControl);
                 }
             }
-            logger.error("Erro: Número de controle {} já cadastrado ", controlNumber);
-            throw new ControlNumberExistsException("Erro: Número de controle já cadastrado");
         }
     }
 

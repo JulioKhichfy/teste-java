@@ -34,8 +34,27 @@ Crie também o DB de nome: ***teste_julio_db***
 
 ## Rodar a aplicação
 
-executar o comando :
+1 - Faça o clone do projeto
+
+2 - executar o comando :
 ```mvn clean spring-boot:run```
+
+#### Alternativa com Docker
+
+Abra um terminal e
+***na raiz da aplicação execute:***
+
+1 - ```docker build -t pedidos-api:latest .```
+
+2 - ```docker run -p 8080:8080 pedidos-api```
+
+Para interromper a aplicação execute:
+
+1 - ```docker ps```
+
+2 - copie o ID do container
+
+3 - ```docker stop <id_container>```
 
 ## Testar a aplicação com Swagger
 
