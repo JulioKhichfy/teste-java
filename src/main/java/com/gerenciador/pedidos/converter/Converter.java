@@ -1,15 +1,19 @@
 package com.gerenciador.pedidos.converter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.gerenciador.pedidos.dto.ItemDTO;
 import com.gerenciador.pedidos.dto.OrderDTO;
 import com.gerenciador.pedidos.dto.OrderListDTO;
 import com.gerenciador.pedidos.model.ClientModel;
 import com.gerenciador.pedidos.model.OrderItemModel;
 import com.gerenciador.pedidos.model.OrderModel;
+import com.gerenciador.pedidos.service.FileHandleService;
 import com.gerenciador.pedidos.service.exceptions.*;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,8 +26,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Converter {
+    private static final Logger logger = LoggerFactory.getLogger(Converter.class);
 
-    public static OrderListDTO fileToDTO(MultipartFile file) {
+    public static OrderListDTO buildDTOFromFile(MultipartFile file) {
         OrderListDTO orderListDTO = null;
         if(file == null) throw new FileNullableException("Erro: O arquivo JSON ou XML não foi anexado.");
         try {
@@ -40,6 +45,9 @@ public class Converter {
 
             if (orderListDTO == null) throw new OrderNullableException("Erro: Verifique se o arquivo enviado encontra-se no padrão pré-definido");
 
+        } catch (UnrecognizedPropertyException e) {
+            e.printStackTrace();
+            throw new OrderNullableException("Erro: Verifique se o arquivo enviado encontra-se no padrão pré-definido", e.getCause());
         } catch (IOException e) {
             e.printStackTrace();
             throw new IOPedidoException(e.getMessage(), e.getCause());
@@ -50,7 +58,7 @@ public class Converter {
         return orderListDTO;
     }
 
-    public static List<ClientModel> DtoToModel(OrderListDTO orderListDTO){
+    public static List<ClientModel> DtoFromFileToModel(OrderListDTO orderListDTO){
         List<ClientModel> clients = new ArrayList<>();
 
         //Obter todos os pedidos de um cliente
@@ -80,10 +88,12 @@ public class Converter {
                     itemModel.setPedido(orderModel);
                     double total = quantidade * precoUnitario;
                     if(quantidade >= 5 && quantidade < 10) {
+                        logger.info("Desconto de 5% aplicado para o item {} do pedido {} ", item.getNome(), orderDTO.getNumeroControle());
                         total = total * 0.95;
                         itemModel.setPrecoTotal(BigDecimal.valueOf(total));
                     }
                     if(quantidade >= 10) {
+                        logger.info("Desconto de 10% aplicado para o item {} do pedido {} ", item.getNome(), orderDTO.getNumeroControle());
                         total = total * 0.90;
                         itemModel.setPrecoTotal(BigDecimal.valueOf(total * 0.90));
                     }
@@ -99,5 +109,37 @@ public class Converter {
             clients.add(clientModel);
         });
         return clients;
+    }
+
+    public static OrderDTO convertOrderModelToOrderDTO(OrderModel order) {
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setNumeroControle(order.getNumeroControle());
+        orderDTO.setDataCadastro(order.getDataPedido().toString());
+        orderDTO.setTotal(order.getTotal());
+        orderDTO.setItems(convertItemModelToItemDTO(order.getItens()));
+        orderDTO.setCodigoCliente(order.getCliente().getCodigo());
+        return orderDTO;
+    }
+
+    public static List<ItemDTO> convertItemModelToItemDTO(List<OrderItemModel> items) {
+        List<ItemDTO> itemListDTO = new ArrayList<>();
+        items.forEach(item -> {
+            ItemDTO i = new ItemDTO();
+            i.setQuantidade(item.getQuantidade());
+            i.setNome(item.getNome());
+            i.setValor(item.getPrecoUnitario().doubleValue());
+            i.setValorTotal(item.getPrecoTotal().doubleValue());
+            itemListDTO.add(i);
+        });
+
+        return itemListDTO;
+    }
+
+    public static List<OrderDTO> buildListOrderDTO(List<OrderModel> orders){
+        List<OrderDTO> ordersDTO = new ArrayList<>();
+        orders.forEach(o -> {
+            ordersDTO.add(convertOrderModelToOrderDTO(o));
+        });
+        return ordersDTO;
     }
 }

@@ -2,35 +2,28 @@ package com.gerenciador.pedidos.service;
 
 import com.gerenciador.pedidos.model.ClientModel;
 import com.gerenciador.pedidos.repository.ClientRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 public class ClientService {
 
-    private Logger logger = Logger.getLogger(ClientService.class.getName());
-
-    private final ClientRepository clientRepository;
+    private static final Logger logger = LoggerFactory.getLogger(ClientService.class);
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+    private ClientRepository clientRepository;
 
-    public ClientModel findByCodigo(Integer codigo){
+    public ClientModel findByCodigo(Integer codigo) {
         return clientRepository.findByCodigo(codigo);
     }
 
-    public ClientModel findClienteFetchPedidos(Integer codigo){
+    public ClientModel findClienteFetchPedidos(Integer codigo) {
         return clientRepository.findClienteFetchPedidos(codigo);
-    }
-
-    public ClientModel create(ClientModel cliente) {
-        return clientRepository.save(cliente);
     }
 
     public List<ClientModel> findAll() {
@@ -38,6 +31,7 @@ public class ClientService {
     }
 
     public List<ClientModel> saveAll(List<ClientModel> clientes) {
+        logger.info("Salvando clientes e seus pedidos");
         return clientRepository.saveAll(clientes);
     }
 

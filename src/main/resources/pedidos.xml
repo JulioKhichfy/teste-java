@@ -1,18 +1,73 @@
 <pedidos>
     <pedido>
-        <numeroControle>123</numeroControle>
-        <dataCadastro>"2024-01-01"</dataCadastro>
-        <nome>"Cliente A"</nome>
-        <valor>100.0</valor>
-        <quantidade>2</quantidade>
+        <numeroControle>130</numeroControle>
+        <dataCadastro>2024-01-01</dataCadastro>
         <codigoCliente>1</codigoCliente>
+        <items>
+            <item>
+                <nome>PRODUTO j</nome>
+                <valor>100.0</valor>
+                <quantidade>2</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO k</nome>
+                <valor>200.0</valor>
+                <quantidade>3</quantidade>
+
+            </item>
+        </items>
     </pedido>
     <pedido>
-        <numeroControle>124</numeroControle>
-        <dataCadastro>"2024-01-02"</dataCadastro>
-        <nome>"Cliente B"</nome>
-        <valor>200.0</valor>
-        <quantidade>3</quantidade>
+        <numeroControle>131</numeroControle>
+        <dataCadastro>2024-01-01</dataCadastro>
+        <codigoCliente>1</codigoCliente>
+        <items>
+            <item>
+                <nome>PRODUTO l</nome>
+                <valor>500.0</valor>
+                <quantidade>5</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO m</nome>
+                <valor>50.0</valor>
+                <quantidade>3</quantidade>
+
+            </item>
+        </items>
+    </pedido>
+    <pedido>
+        <numeroControle>132</numeroControle>
+        <dataCadastro>2024-01-02</dataCadastro>
         <codigoCliente>2</codigoCliente>
+        <items>
+            <item>
+                <nome>PRODUTO n</nome>
+                <valor>100.0</valor>
+                <quantidade>2</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO o</nome>
+                <valor>200.0</valor>
+                <quantidade>8</quantidade>
+
+            </item>
+        </items>
+    </pedido>
+    <pedido>
+        <numeroControle>133</numeroControle>
+        <dataCadastro>2024-01-01</dataCadastro>
+        <codigoCliente>11</codigoCliente>
+        <items>
+            <item>
+                <nome>PRODUTO F</nome>
+                <valor>100.0</valor>
+                <quantidade>2</quantidade>
+            </item>
+            <item>
+                <nome>PRODUTO G</nome>
+                <valor>200.0</valor>
+                <quantidade>3</quantidade>
+            </item>
+        </items>
     </pedido>
 </pedidos>

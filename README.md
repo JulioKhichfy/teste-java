@@ -114,7 +114,22 @@ spring.datasource.username=sa
 spring.datasource.password=
 ```
 
+## EndPoints
+- Encontrar pedido por número de controle, ex: 130
+```http://localhost:8080/api/pedidos/130```
 
+- Listar todos os pedidos 
+```http://localhost:8080/api/pedidos```
+
+- Listar todos os pedidos de uma data específica
+```http://localhost:8080/api/pedidos/data/2024-01-02```
+
+- Upload do arquivo xml ou json:
+```http://localhost:8080/api/pedidos/upload```
+
+por exemplo usando o powershell do windows para realizar o upload do arquivo pedidos.xml:
+
+```curl.exe -X POST -F "file=@C:\<seu>\<caminho>\pedidos.xml" http://localhost:8080/api/pedidos/upload```
 
 
 

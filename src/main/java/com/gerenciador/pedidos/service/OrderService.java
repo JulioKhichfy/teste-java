@@ -1,8 +1,7 @@
 package com.gerenciador.pedidos.service;
-import com.gerenciador.pedidos.dto.ItemDTO;
+import com.gerenciador.pedidos.converter.Converter;
 import com.gerenciador.pedidos.dto.OrderDTO;
 import com.gerenciador.pedidos.model.ClientModel;
-import com.gerenciador.pedidos.model.OrderItemModel;
 import com.gerenciador.pedidos.model.OrderModel;
 import com.gerenciador.pedidos.repository.OrderRepository;
 import com.gerenciador.pedidos.service.exceptions.ControlNumberExistsException;
@@ -11,95 +10,74 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class OrderService {
 
-    private Logger logger = Logger.getLogger(OrderService.class.getName());
-
-    private final OrderRepository orderRepository;
+    private static final Logger logger = LoggerFactory.getLogger(OrderService.class);
 
     @Autowired
-    public OrderService(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
+    private OrderRepository orderRepository;
+
+    public OrderDTO findByControNumber(Integer controlNumber) {
+        logger.info("Obter pedido com número de controle: {}",  controlNumber);
+        OrderModel order = orderRepository.findByNumeroControle(controlNumber);
+        return Converter.convertOrderModelToOrderDTO(order);
     }
 
-    public boolean existsByNumeroControle(Integer numeroControle){
-        return orderRepository.existsByNumeroControle(numeroControle);
-    }
-
-    public long countByNumeroControleIn(List<Integer> numerosControle){
-        return orderRepository.countByNumeroControleIn(numerosControle);
-    }
-
-    public OrderDTO findByNumeroControle(Integer numeroControle){
-        OrderModel order = orderRepository.findByNumeroControle(numeroControle);
-        return convertOrderModelToDTO(order);
-    }
-
-    public List<OrderDTO> findByDataPedido(String dataPedido){
+    public List<OrderDTO> findByDate(String dataPedido) {
+        logger.info("Obter pedidos com data: {}", dataPedido);
         List<OrderModel> orders = orderRepository.findByDataPedido(LocalDate.parse(dataPedido));
-        return buildListOrderDTO(orders);
+        return Converter.buildListOrderDTO(orders);
     }
 
     public List<OrderDTO> findAll(){
+        logger.info("Obter todos os pedidos");
         List<OrderModel> orders = orderRepository.findAll();
-        return buildListOrderDTO(orders);
+
+        // Ordena a lista pelo campo dataPedido em ordem decrescente
+        List<OrderModel> sortedOrders = sortedOrdersByDate(orders);
+
+        return Converter.buildListOrderDTO(sortedOrders);
     }
 
     public void checkNumeroControleInDataBase(List<ClientModel> clients) {
-
-        List<Integer> numerosControle = new ArrayList<>();
+        logger.info("Verificar se número de controle já está cadastrado");
+        List<Integer> controlNumbers = new ArrayList<>();
 
         for(ClientModel clientModel : clients) {
-            List<OrderModel> orders = clientModel.getPedidos();
-            List<Integer> numerosControleByClient = clientModel.getPedidos().stream()
+            List<Integer> controlNumbersByClient = clientModel.getPedidos().stream()
                     .map(OrderModel::getNumeroControle)
                     .collect(Collectors.toList());
-            numerosControle.addAll(numerosControleByClient);
+            controlNumbers.addAll(controlNumbersByClient);
         }
 
         //Não poderá aceitar um número de controle já cadastrado.
-        long count = orderRepository.countByNumeroControleIn(numerosControle);
-        if(count > 0){
-            throw new ControlNumberExistsException("Erro: Número de controle já está cadastrado");
+        long count = orderRepository.countByControlNumbers(controlNumbers);
+        if(count > 0) {
+            //Importante mostrar qual o número de controle ja se encontra cadastrado
+            int controlNumber = 0;
+            for(Integer numControl: controlNumbers) {
+                OrderModel order = orderRepository.findByNumeroControle(numControl);
+                if(order != null) {
+                    controlNumber = order.getNumeroControle();
+                    break;
+                }
+            }
+            logger.error("Erro: Número de controle {} já cadastrado ", controlNumber);
+            throw new ControlNumberExistsException("Erro: Número de controle já cadastrado");
         }
-
     }
 
-    private OrderDTO convertOrderModelToDTO(OrderModel order) {
-        OrderDTO orderDTO = new OrderDTO();
-        orderDTO.setNumeroControle(order.getNumeroControle());
-        orderDTO.setDataCadastro(order.getDataPedido().toString());
-        orderDTO.setTotal(order.getTotal());
-        orderDTO.setItems(convertItemModelToDTO(order.getItens()));
-        orderDTO.setCodigoCliente(order.getCliente().getCodigo());
-        return orderDTO;
+    private List<OrderModel> sortedOrdersByDate(List<OrderModel> orders) {
+        List<OrderModel> sortedOrders = orders.stream()
+                .sorted(Comparator.comparing(OrderModel::getDataPedido).reversed())
+                .collect(Collectors.toList());
+        return sortedOrders;
     }
-
-    private List<ItemDTO> convertItemModelToDTO(List<OrderItemModel> items) {
-        List<ItemDTO> itemListDTO = new ArrayList<>();
-        items.forEach(item -> {
-            ItemDTO i = new ItemDTO();
-            i.setQuantidade(item.getQuantidade());
-            i.setNome(item.getNome());
-            i.setValor(item.getPrecoUnitario().doubleValue());
-            i.setValorTotal(item.getPrecoTotal().doubleValue());
-            itemListDTO.add(i);
-        });
-
-        return itemListDTO;
-    }
-
-    private List<OrderDTO> buildListOrderDTO(List<OrderModel> orders){
-        List<OrderDTO> ordersDTO = new ArrayList<>();
-        orders.forEach(o -> {
-            ordersDTO.add(convertOrderModelToDTO(o));
-        });
-        return ordersDTO;
-    }
-
 }

@@ -11,10 +11,9 @@ import java.util.List;
 
 @Repository
 public interface OrderRepository extends JpaRepository<OrderModel, Integer> {
-    boolean existsByNumeroControle(Integer numeroControle);
 
     @Query("SELECT COUNT(p) FROM OrderModel p WHERE p.numeroControle IN :numerosControle")
-    long countByNumeroControleIn(@Param("numerosControle") List<Integer> numerosControle);
+    long countByControlNumbers(@Param("numerosControle") List<Integer> numerosControle);
 
     OrderModel findByNumeroControle(Integer numeroControle);
 
